@@ -8,6 +8,8 @@
   {#each data.images as image}
     <div class="card">
       <Card>
+        <p>Volume {image.vol_nbr}, Page {image.page_nbr}</p>
+        <p>Regio {image.regio}, {image.location}</p>
         <img src={image.id} alt="test" />
         <embed src={image.caption} />
       </Card>
@@ -17,9 +19,9 @@
 
 <style>
   .card-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    justify-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .card {
@@ -28,7 +30,7 @@
     justify-content: center;
     align-items: center;
     width: 400px;
-    height: 700px;
+    height: 800px;
   }
 
   .card img {
