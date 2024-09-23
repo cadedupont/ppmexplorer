@@ -1,25 +1,30 @@
 <script lang="ts">
-  export let data: { images: string[] };
+  let query = '';
+  let results = [];
+
+  const search = async () => {
+    const response = await fetch('/api/search', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query }),
+    });
+    const data = await response.json();
+    results = data.results;
+  }
 </script>
 
-{#each data.images as image}
-  <button
-    type="button"
-    on:click={(event) => {
-      event.preventDefault();
-    }}
-    on:keydown={(event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-      }
-    }}
-  >
-    <img src={image} alt="test" />
-  </button>
-{/each}
+<main>
+  <h1>Search Embeddings</h1>
+  <input type="text" bind:value={query} placeholder="Enter search query" />
+  <button on:click={search}>Search</button>
 
-<style>
-  img {
-    pointer-events: none;
-  }
-</style>
+  {#if results.length > 0}
+    <ul>
+      {#each results as result}
+        <li>{result.id}</li>
+      {/each}
+    </ul>
+  {/if}
+</main>
