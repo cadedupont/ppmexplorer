@@ -1,7 +1,7 @@
-import { CosmosClient } from '@azure/cosmos';
-import { AzureOpenAI } from 'openai';
 import { json } from '@sveltejs/kit';
 import { env } from '$lib/env';
+import { CosmosClient } from '@azure/cosmos';
+import { AzureOpenAI } from 'openai';
 
 const cosmosClient = new CosmosClient({
   endpoint: env.COSMOS_DB_ENDPOINT,
@@ -9,8 +9,7 @@ const cosmosClient = new CosmosClient({
 });
 const openaiClient = new AzureOpenAI({
   endpoint: env.AZURE_OPENAI_ENDPOINT,
-  deployment: env.AZURE_OPENAI_DEPLOYMENT,
-  apiVersion: '2024-07-01-preview'
+  deployment: env.AZURE_OPENAI_DEPLOYMENT
 });
 
 const generateEmbedding = async (query: string): Promise<number[]> => {
@@ -25,19 +24,20 @@ export const POST = async ({ request }) => {
   try {
     const { query } = await request.json();
     const embedding = await generateEmbedding(query);
-    const container = cosmosClient.database('ppmx').container('sample');
-
+    const container = cosmosClient.database('ppmx').container('test');
     const { resources } = await container.items
       .query({
-        query: 'SELECT * FROM c WHERE ST_DISTANCE(c.embedding, @embedding) < @threshold',
+        query:
+          'SELECT TOP @numResults c.id, c.imageURL, c.caption, c.volume, c.page, c.regio, c.insula, c.room, c.doorway FROM c ORDER BY VectorDistance(c.captionVector, @embedding)',
         parameters: [
           { name: '@embedding', value: embedding },
-          { name: '@threshold', value: 0.1 }
+          { name: '@numResults', value: 20 }
         ]
       })
       .fetchAll();
+    console.log(resources);
     return json({ results: resources });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error:', error.message);
     return json({ error: error.message }, { status: 500 });
   }
