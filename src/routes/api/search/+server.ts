@@ -22,7 +22,7 @@ const generateEmbedding = async (query: string): Promise<number[]> => {
 
 export const POST = async ({ request }) => {
   try {
-    const { query } = await request.json();
+    const { query, numResults } = await request.json();
     const embedding = await generateEmbedding(query);
     const container = cosmosClient.database('ppmx').container('test');
     const { resources } = await container.items
@@ -31,7 +31,7 @@ export const POST = async ({ request }) => {
           'SELECT TOP @numResults c.id, c.imageURL, c.caption, c.volume, c.page, c.regio, c.insula, c.room, c.doorway FROM c ORDER BY VectorDistance(c.captionVector, @embedding)',
         parameters: [
           { name: '@embedding', value: embedding },
-          { name: '@numResults', value: 20 }
+          { name: '@numResults', value: parseInt(numResults, 10) }
         ]
       })
       .fetchAll();

@@ -3,8 +3,10 @@
   import type { PPMRecord } from '$lib/types';
 
   export let data;
-  let query = '';
   let results: PPMRecord[] = [];
+  let query: string = '';
+  let numResults: number;
+  const roman_numerals: string[] = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
 
   const search = async () => {
     const response = await fetch('/api/search', {
@@ -12,7 +14,7 @@
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query, numResults })
     });
     const data = await response.json();
     results = data.results;
@@ -21,22 +23,35 @@
 
 <main>
   <h1>PPMExplorer</h1>
-  <input type="text" bind:value={query} placeholder="Enter search query" />
-  <button on:click={search}>Search</button>
+  <div class="search-container">
+    <select bind:value={numResults}>
+      <option value="5" selected>5</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
+      <option value="50">50</option>
+    </select>
+    <input type="text" bind:value={query} placeholder="Enter search query" />
+    <button on:click={search}>Search</button>
+  </div>
 
   {#if results.length > 0}
     <div class="grid-container">
       {#each results as result}
         <div class="card-container">
           <Card>
-            <h2>Volume {result.volume}</h2>
-            <h3>Regio {result.regio}, Insula {result.insula}</h3>
-            <img
-              class="card-image"
-              src={`${result.imageURL}${data.blobSasToken}`}
-              alt={result.id}
-            />
-            <p>{result.caption}</p>
+            <div class="text-container">
+              <p>Volume {result.regio}, <i>Regio {roman_numerals[result.regio - 1]}, Insula {result.insula}</i></p>
+            </div>
+            <div class="image-container">
+              <img
+                class="card-image"
+                src={`${result.imageURL}${data.blobSasToken}`}
+                alt={result.id}
+              />
+            </div>
+            <div class="caption-container">
+              <p>{result.caption}</p>
+            </div>
           </Card>
         </div>
       {/each}
@@ -45,10 +60,16 @@
 </main>
 
 <style>
+  .search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
   .grid-container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(4, auto);
     gap: 20px;
   }
 
@@ -57,13 +78,36 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 16px;
+  }
+
+  .text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
   }
 
   .card-image {
     width: 100%;
     height: auto;
-    max-height: 200px; /* Ensure the image fits inside the card */
     object-fit: cover;
+    pointer-events: none;
+  }
+
+  .caption-container {
+    height: 100px;
+    overflow: auto;
+    padding: 8px;
   }
 </style>
