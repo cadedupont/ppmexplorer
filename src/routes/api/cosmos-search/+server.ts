@@ -5,8 +5,8 @@ import { AzureOpenAI } from 'openai';
 
 const generateOpenAIEmbedding = async (query: string): Promise<number[]> => {
   const client = new AzureOpenAI({
-    endpoint: env.AZURE_OPENAI_ENDPOINT,
-    deployment: env.AZURE_OPENAI_DEPLOYMENT
+    endpoint: String(env.AZURE_OPENAI_ENDPOINT),
+    deployment: String(env.AZURE_OPENAI_DEPLOYMENT)
   });
   const response = await client.embeddings.create({
     model: 'text-embedding-ada-002',
@@ -17,7 +17,7 @@ const generateOpenAIEmbedding = async (query: string): Promise<number[]> => {
 
 const generateAIVisionEmbedding = async (query: string): Promise<number[]> => {
   const response = await fetch(
-    `${env.AZURE_COMPUTER_VISION_ENDPOINT}computervision/retrieval:VectorizeText?api-version=2024-02-01&model-version=2023-04-15`,
+    `${env.AZURE_COMPUTER_VISION_ENDPOINT}computervision/retrieval:vectorizeText?api-version=2024-02-01&model-version=2023-04-15`,
     {
       method: 'POST',
       headers: {
@@ -51,7 +51,7 @@ export const POST = async ({ request }) => {
         ]
       })
       .fetchAll();
-
+    
     const imageWeight = weight / 100;
     const captionWeight = (100 - weight) / 100;
     const weightedResources = resources
@@ -61,7 +61,7 @@ export const POST = async ({ request }) => {
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, numResults);
-
+    
     return json({ results: weightedResources });
   } catch (error: any) {
     console.error('Error:', error.message);

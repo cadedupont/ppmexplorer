@@ -22,7 +22,7 @@ export const GET = async ({ params }) => {
 
   const { resources: similarItems } = await container.items
     .query({
-      query: `SELECT c.id, c.imageURL, c.caption, c.volume, c.page, c.location, c.imageVector, VectorDistance(c.imageVector, @embedding) AS imageDistance FROM c`,
+      query: `SELECT c.id, c.imageURL, c.caption, c.volume, c.page, c.location, VectorDistance(c.imageVector, @embedding) AS imageDistance FROM c`,
       parameters: [{ name: '@embedding', value: record.imageVector }]
     })
     .fetchAll();
@@ -36,11 +36,10 @@ export const GET = async ({ params }) => {
       fetch(`https://api.p-lod.org/geojson/${endpoint}`).then((response) => response.json())
     )
   );
-  const geojsonData = {
+  record.geojson = {
     type: 'FeatureCollection',
     features: geojson
   };
-  record.geojson = geojsonData;
   record.similarItems = similarItems.sort((a, b) => b.imageDistance - a.imageDistance).slice(1, 11);
   return json({ record });
 };
