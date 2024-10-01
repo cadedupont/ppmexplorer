@@ -6,15 +6,16 @@
   let results: PPMRecord[] = [];
   let query: string = '';
   let numResults: number;
+  let weight: number = 50;
   const roman_numerals: string[] = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
 
   const search = async () => {
-    const response = await fetch('/api/search', {
+    const response = await fetch('/api/cosmos-search', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ query, numResults })
+      body: JSON.stringify({ query, numResults, weight })
     });
     const data = await response.json();
     results = data.results;
@@ -34,13 +35,25 @@
     <button on:click={search}>Search</button>
   </div>
 
+  <div class="slider-container">
+    <label for="weight-slider">Caption {100 - weight}%</label>
+    <input type="range" id="weight-slider" min="0" max="100" bind:value={weight} />
+    <label for="weight-slider">Image {weight}%</label>
+  </div>
+
   {#if results.length > 0}
     <div class="grid-container">
       {#each results as result}
         <div class="card-container">
           <Card>
             <div class="text-container">
-              <p>Volume {result.regio}, <i>Regio {roman_numerals[result.regio - 1]}, Insula {result.insula}</i></p>
+              <p>
+                Volume {result.volume},
+                <i
+                  >Regio {roman_numerals[result.location.regio - 1]}, Insula {result.location
+                    .insula}</i
+                >
+              </p>
             </div>
             <div class="image-container">
               <img
@@ -61,6 +74,13 @@
 
 <style>
   .search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .slider-container {
     display: flex;
     align-items: center;
     gap: 10px;

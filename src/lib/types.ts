@@ -4,10 +4,11 @@ export type PPMRecord = {
   caption: string;
   volume: number;
   page: number;
-  regio: number;
-  
-  // should be a number, will be a string for now
-  insula: string;
-  
-  doorway: string;
+  location: {
+    regio: number;
+    insula: number;
+    property: number;
+  }
+  captionVector: number[];
+  imageVector: number[];
 }
