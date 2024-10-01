@@ -4,7 +4,7 @@
 
   export let data;
   let results: PPMRecord[] = [];
-  let query: string = '';
+  let query: string;
   let numResults: number;
   let weight: number = 50;
   const roman_numerals: string[] = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
@@ -44,15 +44,14 @@
   {#if results.length > 0}
     <div class="grid-container">
       {#each results as result}
-        <div class="card-container">
+        <a class="card-container" href={`records/${result.id}`}>
           <Card>
             <div class="text-container">
               <p>
-                Volume {result.volume},
-                <i
-                  >Regio {roman_numerals[result.location.regio - 1]}, Insula {result.location
-                    .insula}</i
-                >
+                Volume {result.volume}, Page {result.page},
+                <i>
+                  Regio {roman_numerals[result.location.regio - 1]}, Insula {result.location.insula}
+                </i>
               </p>
             </div>
             <div class="image-container">
@@ -66,7 +65,7 @@
               <p>{result.caption}</p>
             </div>
           </Card>
-        </div>
+        </a>
       {/each}
     </div>
   {/if}
@@ -98,6 +97,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
+    text-decoration: none;
+    color: inherit;
   }
 
   .text-container {
@@ -114,14 +115,14 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 200px;
+    height: 300px;
     overflow: hidden;
   }
 
   .card-image {
     width: 100%;
     height: auto;
-    object-fit: cover;
+    object-fit: contain;
     pointer-events: none;
   }
 
