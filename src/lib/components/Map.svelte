@@ -1,7 +1,7 @@
 <script lang="ts">
   import { MapLibre, GeoJSON, FillLayer, LineLayer } from 'svelte-maplibre';
 
-  export let geojson: GeoJSON.Feature;
+  export let geojson: GeoJSON.Feature | GeoJSON.FeatureCollection;
 </script>
 
 <MapLibre

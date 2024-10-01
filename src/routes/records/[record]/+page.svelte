@@ -1,17 +1,12 @@
 <script lang="ts">
   import Map from '$lib/components/Map.svelte';
   import Card from '@smui/card';
-  import Page from '../../+page.svelte';
-  import { resolveRoute } from '$app/paths';
 
   const roman_numerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
-
-  
 
   export let data: any;
 </script>
 
-<h1>ID: {data.record.id}</h1>
 <img src={`${data.record.imageURL}${data.blobSasToken}`} alt={`${data.record.id}'s Image'`} />
 <p>Caption: {data.record.caption}</p>
 <p>Volume: {data.record.volume}</p>
@@ -20,6 +15,7 @@
 <p>Insula: {data.record.location.insula}</p>
 <p>Property: {data.record.location.property}</p>
 
+<h2>Similar Items:</h2>
 <div class="grid-container">
   {#each data.record.similarItems as result}
     <a class="card-container" href={`/records/${result.id}`}>

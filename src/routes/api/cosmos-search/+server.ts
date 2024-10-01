@@ -51,6 +51,7 @@ export const POST = async ({ request }) => {
         ]
       })
       .fetchAll();
+
     const imageWeight = weight / 100;
     const captionWeight = (100 - weight) / 100;
     const weightedResources = resources
@@ -60,6 +61,7 @@ export const POST = async ({ request }) => {
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, numResults);
+
     return json({ results: weightedResources });
   } catch (error: any) {
     console.error('Error:', error.message);

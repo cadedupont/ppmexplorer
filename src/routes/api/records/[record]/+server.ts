@@ -27,14 +27,19 @@ export const GET = async ({ params }) => {
     })
     .fetchAll();
 
-  const geojson = await fetch(
-    `https://api.p-lod.org/geojson/r${record.location.regio}-i${record.location.insula}-p${record.location.property}`,
-    {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    }
+  const geojson = await Promise.all(
+    [
+      `r${record.location.regio}`,
+      `r${record.location.regio}-i${record.location.insula}`,
+      `r${record.location.regio}-i${record.location.insula}-p${record.location.property}`
+    ].map((endpoint) =>
+      fetch(`https://api.p-lod.org/geojson/${endpoint}`).then((response) => response.json())
+    )
   );
-  const geojsonData = await geojson.json();
+  const geojsonData = {
+    type: 'FeatureCollection',
+    features: geojson
+  };
   record.geojson = geojsonData;
   record.similarItems = similarItems.sort((a, b) => b.imageDistance - a.imageDistance).slice(1, 11);
   return json({ record });

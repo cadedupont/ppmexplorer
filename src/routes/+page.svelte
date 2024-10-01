@@ -23,7 +23,6 @@
 </script>
 
 <main>
-  <h1>PPMExplorer</h1>
   <div class="search-container">
     <select bind:value={numResults}>
       <option value="5" selected>5</option>
@@ -44,7 +43,7 @@
   {#if results.length > 0}
     <div class="grid-container">
       {#each results as result}
-        <a class="card-container" href={`records/${result.id}`}>
+        <a class="card-container" href={`/records/${result.id}`}>
           <Card>
             <div class="text-container">
               <p>
