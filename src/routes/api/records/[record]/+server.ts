@@ -42,8 +42,7 @@ export const GET = async ({ params }) => {
   //   type: 'FeatureCollection',
   //   features: await geojson.json()
   // }
-  const geojson = await fetch(`https://api.p-lod.org/geojson/r${record.location.regio}-i${record.location.insula}-p${record.location.property}`);
-  record.geojson = await geojson.json();
+  // const geojson = await fetch(`https://api.p-lod.org/geojson/r${record.location.regio}-i${record.location.insula}-p${record.location.property}`);
   record.similarItems = similarItems.sort((a, b) => b.imageDistance - a.imageDistance).slice(1, 11);
   return json({ record });
 };

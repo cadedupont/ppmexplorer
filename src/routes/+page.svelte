@@ -10,7 +10,7 @@
   const roman_numerals: string[] = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
 
   const search = async () => {
-    const response = await fetch('/api/cosmos-search', {
+    const response = await fetch('/api/search', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

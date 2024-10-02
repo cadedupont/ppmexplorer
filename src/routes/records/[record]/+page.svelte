@@ -29,11 +29,7 @@
           </p>
         </div>
         <div class="image-container">
-          <img
-            class="card-image"
-            src={`${result.imageURL}${data.blobSasToken}`}
-            alt={result.id}
-          />
+          <img class="card-image" src={`${result.imageURL}${data.blobSasToken}`} alt={result.id} />
         </div>
         <div class="caption-container">
           <p>{result.caption}</p>
@@ -43,7 +39,7 @@
   {/each}
 </div>
 
-<Map geojson={data.record.geojson} />
+<Map geojson={data.record.location.geojson} />
 
 <style>
   .grid-container {
