@@ -39,7 +39,9 @@ export const POST = async ({ request }) => {
       endpoint: String(env.COSMOS_DB_ENDPOINT),
       key: String(env.COSMOS_DB_KEY)
     });
-    const container = client.database('ppmx').container('comp-vision-test');
+    const container = client
+      .database(String(env.COSMOS_DB_NAME))
+      .container(String(env.COSMOS_DB_CONTAINER_NAME));
     const embedding = await generateAIVisionEmbedding(query);
 
     const { resources } = await container.items
@@ -51,7 +53,7 @@ export const POST = async ({ request }) => {
         ]
       })
       .fetchAll();
-    
+
     const imageWeight = weight / 100;
     const captionWeight = (100 - weight) / 100;
     const weightedResources = resources
@@ -61,7 +63,7 @@ export const POST = async ({ request }) => {
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, numResults);
-    
+
     return json({ results: weightedResources });
   } catch (error: any) {
     console.error('Error:', error.message);
