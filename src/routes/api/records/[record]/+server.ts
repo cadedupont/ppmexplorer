@@ -17,7 +17,6 @@ export const GET = async ({ params }) => {
       parameters: [{ name: '@recordID', value: params.record }]
     })
     .fetchAll();
-
   if (records.length === 0) {
     return json({ error: 'Record not found', status: 404 });
   }
@@ -29,6 +28,5 @@ export const GET = async ({ params }) => {
       parameters: [{ name: '@embedding', value: record.imageVector }]
     })
     .fetchAll();
-  record.similarItems = similarItems;
-  return json({ record });
+  return json({ record, similarItems });
 };

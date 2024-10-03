@@ -65,6 +65,7 @@
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
+          <option value="100">100</option>
         </select>
         <input type="text" bind:value={query} placeholder="Enter search query" />
         <button on:click={search}>Search</button>
@@ -106,7 +107,7 @@
       {/if}
     </div>
     <div class="map-container">
-      <Map {geojson} />
+      <Map {geojson} center={undefined} />
     </div>
   </div>
 </main>
@@ -167,13 +168,13 @@
   }
 
   .caption-container {
-    width: 100%;
     padding: 8px;
+    overflow: auto;
   }
 
   /* Right side (Map) */
   .map-container {
-    flex: 2.5;
+    flex: 2;
     height: 100vh;
     padding: 20px;
     overflow: hidden;

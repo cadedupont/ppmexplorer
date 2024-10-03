@@ -2,12 +2,13 @@
   import { MapLibre, GeoJSON, FillLayer, LineLayer, DefaultMarker } from 'svelte-maplibre';
 
   export let geojson: GeoJSON.GeometryCollection;
+  export let center: [number, number] | undefined;
 </script>
 
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
-  center={[14.4886, 40.751069]}
-  zoom={16}
+  center={center ? center : [14.4886, 40.751069]}
+  zoom={center ? 18 : 15}
   class="map"
   standardControls
 >
