@@ -1,13 +1,21 @@
 <script lang="ts">
   import Card from '@smui/card';
+
+  import Map from '$lib/components/Map.svelte';
   import type { PPMRecord } from '$lib/types';
+  import { romanNumerals } from '$lib/helpers';
 
   export let data;
+
   let results: PPMRecord[] = [];
-  let query: string;
+  let query: string = '';
+  let vectorType: string;
   let numResults: number;
-  let weight: number = 50;
-  const roman_numerals: string[] = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
+
+  let geojson: GeoJSON.GeometryCollection = {
+    type: 'GeometryCollection',
+    geometries: []
+  };
 
   const search = async () => {
     const response = await fetch('/api/search', {
@@ -15,10 +23,14 @@
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ query, numResults, weight })
+      body: JSON.stringify({ query, numResults, vectorType })
     });
     const data = await response.json();
     results = data.results;
+    geojson = {
+      type: 'GeometryCollection',
+      geometries: results.flatMap((result) => result.location.geojson.geometries)
+    };
   };
 </script>
 
@@ -32,12 +44,11 @@
     </select>
     <input type="text" bind:value={query} placeholder="Enter search query" />
     <button on:click={search}>Search</button>
-  </div>
-
-  <div class="slider-container">
-    <label for="weight-slider">Caption {100 - weight}%</label>
-    <input type="range" id="weight-slider" min="0" max="100" bind:value={weight} />
-    <label for="weight-slider">Image {weight}%</label>
+    <label for="vector-type">Vector Type:</label>
+    <select id="vector-type" bind:value={vectorType}>
+      <option value="imageVector" selected>Image</option>
+      <option value="captionVector">Caption</option>
+    </select>
   </div>
 
   {#if results.length > 0}
@@ -49,7 +60,7 @@
               <p>
                 Volume {result.volume}, Page {result.page},
                 <i>
-                  Regio {roman_numerals[result.location.regio - 1]}, Insula {result.location.insula}
+                  Regio {romanNumerals[result.location.regio]}, Insula {result.location.insula}
                 </i>
               </p>
             </div>
@@ -67,18 +78,12 @@
         </a>
       {/each}
     </div>
+    <Map {geojson} />
   {/if}
 </main>
 
 <style>
   .search-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-
-  .slider-container {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -95,27 +100,21 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
     text-decoration: none;
     color: inherit;
   }
 
   .text-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
     text-align: center;
   }
 
   .image-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 100%;
     height: 300px;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .card-image {

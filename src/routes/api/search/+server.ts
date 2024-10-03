@@ -25,8 +25,13 @@ const generateEmbedding = async (query: string): Promise<number[]> => {
 
 export const POST = async ({ request }) => {
   try {
-    const { query, numResults, weight } = await request.json();
-    if (!query || !numResults || !weight) {
+    // const { query, numResults, weight } = await request.json();
+    // if (!query || !numResults || !weight) {
+    //   throw new Error('Missing required parameters');
+    // }
+
+    const { query, numResults, vectorType } = await request.json();
+    if (!query || !numResults || !vectorType) {
       throw new Error('Missing required parameters');
     }
 
@@ -44,25 +49,25 @@ export const POST = async ({ request }) => {
 
     const { resources } = await container.items
       .query({
-        query: `SELECT c.id, c.imageURL, c.caption, c.volume, c.page, c.location, VectorDistance(c.imageVector, @embedding) AS imageDistance, VectorDistance(c.captionVector, @embedding) AS captionDistance FROM c`,
+        query: `SELECT TOP @numResults c.id, c.imageURL, c.caption, c.volume, c.page, c.location FROM c ORDER BY VectorDistance(c.${vectorType}, @embedding)`,
         parameters: [
           { name: '@numResults', value: parseInt(numResults, 10) },
-          { name: '@embedding', value: embedding }
+          { name: '@embedding', value: embedding },
         ]
       })
       .fetchAll();
 
-    const imageWeight = weight / 100;
-    const captionWeight = (100 - weight) / 100;
-    const weightedResources = resources
-      .map((resource) => ({
-        ...resource,
-        score: resource.imageDistance * imageWeight + resource.captionDistance * captionWeight
-      }))
-      .sort((a, b) => b.score - a.score)
-      .slice(0, numResults);
+    // const imageWeight = weight / 100;
+    // const captionWeight = (100 - weight) / 100;
+    // const weightedResources = resources
+    //   .map((resource) => ({
+    //     ...resource,
+    //     score: resource.imageDistance * imageWeight + resource.captionDistance * captionWeight
+    //   }))
+    //   .sort((a, b) => b.score - a.score)
+    //   .slice(0, numResults);
 
-    return json({ results: weightedResources });
+    return json({ results: resources });
   } catch (error: any) {
     console.error('Error:', error.message);
     return json({ error: error.message }, { status: 500 });

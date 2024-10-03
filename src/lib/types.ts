@@ -8,6 +8,7 @@ export type PPMRecord = {
     regio: number;
     insula: number;
     property: number;
+    geojson: GeoJSON.GeometryCollection;
   }
   captionVector: number[];
   imageVector: number[];

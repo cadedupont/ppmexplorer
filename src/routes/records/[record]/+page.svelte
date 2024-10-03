@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Map from '$lib/components/Map.svelte';
   import Card from '@smui/card';
 
-  const roman_numerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
+  import Map from '$lib/components/Map.svelte';
+  import { romanNumerals } from '$lib/helpers';
 
   export let data: any;
 </script>
@@ -11,7 +11,7 @@
 <p>Caption: {data.record.caption}</p>
 <p>Volume: {data.record.volume}</p>
 <p>Page Number: {data.record.page}</p>
-<p>Regio: {data.record.location.regio}</p>
+<p>Regio: {romanNumerals[data.record.location.regio]}</p>
 <p>Insula: {data.record.location.insula}</p>
 <p>Property: {data.record.location.property}</p>
 
@@ -24,7 +24,7 @@
           <p>
             Volume {result.volume}, Page {result.page},
             <i>
-              Regio {roman_numerals[result.location.regio - 1]}, Insula {result.location.insula}
+              Regio {romanNumerals[result.location.regio]}, Insula {result.location.insula}
             </i>
           </p>
         </div>

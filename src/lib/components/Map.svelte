@@ -1,41 +1,36 @@
 <script lang="ts">
-  import {
-    MapLibre,
-    GeoJSON,
-    FillLayer,
-    LineLayer,
-    DefaultMarker,
-  } from 'svelte-maplibre';
-  import type { LngLatLike } from 'svelte-maplibre';
+  import { MapLibre, GeoJSON, FillLayer, LineLayer, DefaultMarker } from 'svelte-maplibre';
 
   export let geojson: GeoJSON.GeometryCollection;
-  const polygon: GeoJSON.Geometry = geojson.geometries[0];
-  const centerPoint = geojson.geometries[1] as GeoJSON.Point;
-  const centroid: LngLatLike = centerPoint.coordinates as [number, number];
 </script>
 
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
-  center={centroid}
-  zoom={18}
+  center={[14.4886, 40.751069]}
+  zoom={16}
   class="map"
   standardControls
 >
-  <GeoJSON data={polygon}>
-    <FillLayer
-      paint={{
-        'fill-color': '#088',
-        'fill-opacity': 0.1
-      }}
-    />
-    <LineLayer
-      paint={{
-        'line-color': '#000',
-        'line-width': 1
-      }}
-    />
-  </GeoJSON>
-  <DefaultMarker lngLat={centroid} />
+  {#each geojson.geometries as geometry}
+    {#if geometry.type != 'Point'}
+      <GeoJSON data={geometry}>
+        <FillLayer
+          paint={{
+            'fill-color': '#088',
+            'fill-opacity': 0.3
+          }}
+        />
+        <LineLayer
+          paint={{
+            'line-color': '#000',
+            'line-width': 1
+          }}
+        />
+      </GeoJSON>
+      <!-- {:else}
+      <DefaultMarker lngLat={geometry.coordinates} /> -->
+    {/if}
+  {/each}
 </MapLibre>
 
 <style>
