@@ -1,5 +1,6 @@
 <script lang="ts">
   import Card from '@smui/card';
+  import Select from '@smui/select';
 
   import Map from '$lib/components/Map.svelte';
   import type { PPMRecord } from '$lib/types';
@@ -8,91 +9,124 @@
   export let data;
 
   let results: PPMRecord[] = [];
-  let query: string = '';
+  let query: string;
   let vectorType: string;
+  let errorMessage: string;
   let numResults: number;
-
   let geojson: GeoJSON.GeometryCollection = {
     type: 'GeometryCollection',
     geometries: []
   };
 
   const search = async () => {
-    const response = await fetch('/api/search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ query, numResults, vectorType })
-    });
-    const data = await response.json();
-    results = data.results;
-    geojson = {
-      type: 'GeometryCollection',
-      geometries: results.flatMap((result) => result.location.geojson.geometries)
-    };
+    try {
+      const response = await fetch('/api/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ query, numResults, vectorType })
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+
+      if (data.results.length === 0) {
+        errorMessage = 'No results found. Please try again.';
+      } else {
+        errorMessage = '';
+        geojson.geometries = [];
+        results = data.results;
+        results.forEach((result) => {
+          if (result.location.geojson) {
+            geojson.geometries.push(...result.location.geojson.geometries);
+          }
+        });
+        geojson.geometries.filter((geometry) => geometry.type !== 'Point');
+      }
+    } catch (error) {
+      errorMessage = 'Failed to fetch search results. Please try again.';
+    }
+    geojson.geometries.filter((geometry) => geometry.type !== 'Point');
   };
 </script>
 
 <main>
-  <div class="search-container">
-    <select bind:value={numResults}>
-      <option value="5" selected>5</option>
-      <option value="10">10</option>
-      <option value="20">20</option>
-      <option value="50">50</option>
-    </select>
-    <input type="text" bind:value={query} placeholder="Enter search query" />
-    <button on:click={search}>Search</button>
-    <label for="vector-type">Vector Type:</label>
-    <select id="vector-type" bind:value={vectorType}>
-      <option value="imageVector" selected>Image</option>
-      <option value="captionVector">Caption</option>
-    </select>
-  </div>
+  <div class="layout-container">
+    <div class="results-container">
+      <div class="search-container">
+        <select id="vector-type" bind:value={vectorType}>
+          <option value="imageVector" selected>Image</option>
+          <option value="captionVector">Caption</option>
+        </select>
+        <select bind:value={numResults}>
+          <option value="5" selected>5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+        <input type="text" bind:value={query} placeholder="Enter search query" />
+        <button on:click={search}>Search</button>
+      </div>
 
-  {#if results.length > 0}
-    <div class="grid-container">
-      {#each results as result}
-        <a class="card-container" href={`/records/${result.id}`}>
-          <Card>
-            <div class="text-container">
-              <p>
-                Volume {result.volume}, Page {result.page},
-                <i>
-                  Regio {romanNumerals[result.location.regio]}, Insula {result.location.insula}
-                </i>
-              </p>
+      {#if errorMessage}
+        <div class="error-message">{errorMessage}</div>
+      {/if}
+
+      {#if results.length > 0}
+        <div class="scrollable-results">
+          {#each results as result}
+            <div class="card-container">
+              <a href={`/records/${result.id}`}>
+                <Card>
+                  <div style="text-align: center;">
+                    <p>
+                      Volume {result.volume}, Page {result.page},
+                      <i>
+                        Regio {romanNumerals[result.location.regio]}, Insula {result.location.insula}
+                      </i>
+                    </p>
+                  </div>
+                  <div class="image-container">
+                    <img
+                      class="card-image"
+                      src={`${result.imageURL}${data.blobSasToken}`}
+                      alt={result.id}
+                    />
+                  </div>
+                  <div class="caption-container">
+                    <p>{result.caption}</p>
+                  </div>
+                </Card>
+              </a>
             </div>
-            <div class="image-container">
-              <img
-                class="card-image"
-                src={`${result.imageURL}${data.blobSasToken}`}
-                alt={result.id}
-              />
-            </div>
-            <div class="caption-container">
-              <p>{result.caption}</p>
-            </div>
-          </Card>
-        </a>
-      {/each}
+          {/each}
+        </div>
+      {/if}
     </div>
-    <Map {geojson} />
-  {/if}
+    <div class="map-container">
+      <Map {geojson} />
+    </div>
+  </div>
 </main>
 
 <style>
-  .search-container {
+  .layout-container {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    height: 100vh;
   }
 
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+  .results-container {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    border-right: 1px solid #ddd;
+  }
+
+  .scrollable-results {
+    display: flex;
+    flex-direction: column;
     gap: 20px;
   }
 
@@ -102,10 +136,13 @@
     align-items: center;
     text-decoration: none;
     color: inherit;
+    width: 100%;
   }
 
-  .text-container {
-    text-align: center;
+  .card-container a {
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
   }
 
   .image-container {
@@ -117,16 +154,35 @@
     justify-content: center;
   }
 
+  .error-message {
+    color: red;
+    margin-bottom: 20px;
+  }
+
   .card-image {
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: contain;
     pointer-events: none;
   }
 
   .caption-container {
-    height: 100px;
-    overflow: auto;
+    width: 100%;
     padding: 8px;
+  }
+
+  /* Right side (Map) */
+  .map-container {
+    flex: 2.5;
+    height: 100vh;
+    padding: 20px;
+    overflow: hidden;
+  }
+
+  .search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
   }
 </style>
