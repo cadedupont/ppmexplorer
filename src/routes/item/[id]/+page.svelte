@@ -26,8 +26,12 @@
           </td>
         </tr>
         <tr>
-          <td>Caption:</td>
+          <td>Caption (Italian):</td>
           <td>{data.item.caption}</td>
+        </tr>
+        <tr>
+          <td>Caption (English):</td>
+          <td>{data.item.caption_en}</td>
         </tr>
         <tr>
           <td>Volume:</td>
@@ -84,7 +88,7 @@
                 <img class="card-image" src={similarItem.imageURL} alt={similarItem.id} />
               </div>
               <div class="caption-container">
-                <p>{similarItem.caption}</p>
+                <p>{similarItem.caption_en}</p>
               </div>
             </Card>
           </a>

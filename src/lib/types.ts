@@ -1,7 +1,8 @@
 export type PPMItem = {
   id: string;
   imageURL: string;
-  caption: string;
+  caption?: string;
+  caption_en: string;
   volume: number;
   page: number;
   location: {
@@ -10,6 +11,5 @@ export type PPMItem = {
     property: number;
     geojson: GeoJSON.GeometryCollection | null;
   }
-  captionVector?: number[];
   imageVector?: number[];
 }

@@ -86,7 +86,7 @@
                 <img class="card-image" src={item.imageURL} alt={item.id} />
               </div>
               <div class="caption-container">
-                <p>{item.caption}</p>
+                <p>{item.caption_en}</p>
               </div>
             </Card>
           </a>

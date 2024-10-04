@@ -4,7 +4,7 @@ import { container } from '$lib/cosmos';
 export const GET = async ({ params }) => {
   const { resources: items } = await container.items
     .query({
-      query: `SELECT c.id, c.imageURL, c.caption, c.volume, c.page, c.location, c.imageVector FROM c WHERE c.id = @itemID`,
+      query: `SELECT c.id, c.imageURL, c.caption, c.caption_en, c.volume, c.page, c.location, c.imageVector FROM c WHERE c.id = @itemID`,
       parameters: [{ name: '@itemID', value: params.id }]
     })
     .fetchAll();
@@ -15,7 +15,7 @@ export const GET = async ({ params }) => {
 
   const { resources: similarItems } = await container.items
     .query({
-      query: `SELECT c.id, c.imageURL, c.caption, c.volume, c.page, c.location FROM c ORDER BY VectorDistance(c.imageVector, @embedding) OFFSET 1 LIMIT 10`,
+      query: `SELECT c.id, c.imageURL, c.caption_en, c.volume, c.page, c.location FROM c ORDER BY VectorDistance(c.imageVector, @embedding) OFFSET 1 LIMIT 10`,
       parameters: [{ name: '@embedding', value: item.imageVector }]
     })
     .fetchAll();

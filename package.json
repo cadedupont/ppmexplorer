@@ -39,11 +39,10 @@
 	"dependencies": {
 		"@azure/cosmos": "^4.1.1",
 		"@fontsource/pt-serif": "^5.1.0",
-		"@smui/select": "^7.0.0",
-		"@smui/textfield": "^7.0.0",
 		"dotenv": "^16.4.5",
 		"https": "^1.0.0",
 		"maplibre-gl": "^4.6.0",
+		"openai": "^4.67.1",
 		"smui-theme": "^7.0.0",
 		"svelte-maplibre": "^0.9.13",
 		"svelte-material-ui": "^7.0.0"
