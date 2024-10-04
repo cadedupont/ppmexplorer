@@ -1,5 +1,5 @@
 <script lang="ts">
-  import '@fontsource/roboto';
+  import '@fontsource/pt-serif';
 </script>
 
 <svelte:head>
@@ -15,6 +15,10 @@
 
 <style>
   :global(body) {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'PT Serif', serif;
+  }
+
+  :global(img) {
+    pointer-events: none;
   }
 </style>

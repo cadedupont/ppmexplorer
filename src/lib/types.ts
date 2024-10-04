@@ -1,4 +1,4 @@
-export type PPMRecord = {
+export type PPMItem = {
   id: string;
   imageURL: string;
   caption: string;
@@ -8,8 +8,8 @@ export type PPMRecord = {
     regio: number;
     insula: number;
     property: number;
-    geojson: GeoJSON.GeometryCollection;
+    geojson: GeoJSON.GeometryCollection | null;
   }
-  captionVector: number[];
-  imageVector: number[];
+  captionVector?: number[];
+  imageVector?: number[];
 }

@@ -7,7 +7,7 @@
 
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
-  center={center ? center : [14.4886, 40.751069]}
+  center={center ? center : [14.4884, 40.75103]}
   zoom={center ? 18 : 15}
   class="map"
   standardControls

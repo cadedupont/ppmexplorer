@@ -3,12 +3,11 @@
 
   import Map from '$lib/components/Map.svelte';
   import { romanNumerals } from '$lib/helpers';
-  import type { PPMRecord } from '$lib/types';
+  import type { PPMItem } from '$lib/types';
 
   export let data: {
-    record: PPMRecord;
-    similarItems: PPMRecord[];
-    blobSasToken: string
+    item: PPMItem;
+    similarItems: PPMItem[];
   };
 </script>
 
@@ -20,48 +19,48 @@
           <td>Image:</td>
           <td>
             <img
-              src={`${data.record.imageURL}${data.blobSasToken}`}
-              alt={`${data.record.id}'s Image'`}
+              src={data.item.imageURL}
+              alt={`${data.item.id}'s Image'`}
               class="contained-image"
             />
           </td>
         </tr>
         <tr>
           <td>Caption:</td>
-          <td>{data.record.caption}</td>
+          <td>{data.item.caption}</td>
         </tr>
         <tr>
           <td>Volume:</td>
-          <td>{data.record.volume}</td>
+          <td>{data.item.volume}</td>
         </tr>
         <tr>
           <td>Page Number:</td>
-          <td>{data.record.page}</td>
+          <td>{data.item.page}</td>
         </tr>
         <tr>
           <td>Regio:</td>
-          <td>{romanNumerals[data.record.location.regio]}</td>
+          <td>{romanNumerals[data.item.location.regio]}</td>
         </tr>
         <tr>
           <td>Insula:</td>
-          <td>{data.record.location.insula}</td>
+          <td>{data.item.location.insula}</td>
         </tr>
         <tr>
           <td>Property:</td>
-          <td>{data.record.location.property}</td>
+          <td>{data.item.location.property}</td>
         </tr>
       </table>
     </div>
     <div class="right">
-      {#if data.record.location.geojson}
+      {#if data.item.location.geojson}
         <div class="map-container">
           <Map
-            geojson={data.record.location.geojson}
-            center={data.record.location.geojson.geometries[1].coordinates}
+            geojson={data.item.location.geojson}
+            center={data.item.location.geojson.geometries[1].coordinates}
           />
         </div>
       {:else}
-        <p style="color: red;">No map data available for this record.</p>
+        <p style="color: red;">No map data available for this item.</p>
       {/if}
     </div>
   </div>
@@ -70,23 +69,19 @@
     <div class="grid-container">
       {#each data.similarItems as similarItem}
         <div class="card-container">
-          <a href={`/records/${similarItem.id}`}>
+          <a href={`/item/${similarItem.id}`}>
             <Card>
               <div class="title-container">
                 <p>
                   Volume {similarItem.volume}, Page {similarItem.page},
                   <i>
-                    Regio {romanNumerals[similarItem.location.regio]}, Insula {similarItem.location
-                      .insula}
+                    Regio {romanNumerals[similarItem.location.regio]},
+                    Insula {similarItem.location.insula}
                   </i>
                 </p>
               </div>
               <div class="image-container">
-                <img
-                  class="card-image"
-                  src={`${similarItem.imageURL}${data.blobSasToken}`}
-                  alt={similarItem.id}
-                />
+                <img class="card-image" src={similarItem.imageURL} alt={similarItem.id} />
               </div>
               <div class="caption-container">
                 <p>{similarItem.caption}</p>

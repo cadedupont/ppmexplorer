@@ -1,14 +1,11 @@
 <script lang="ts">
   import Card from '@smui/card';
-  import Select from '@smui/select';
 
   import Map from '$lib/components/Map.svelte';
-  import type { PPMRecord } from '$lib/types';
+  import type { PPMItem } from '$lib/types';
   import { romanNumerals } from '$lib/helpers';
 
-  export let data;
-
-  let results: PPMRecord[] = [];
+  let items: PPMItem[] = [];
   let query: string;
   let vectorType: string;
   let errorMessage: string;
@@ -32,100 +29,90 @@
       }
       const data = await response.json();
 
-      if (data.results.length === 0) {
-        errorMessage = 'No results found. Please try again.';
+      if (data.items.length === 0) {
+        errorMessage = 'No items found. Please try again.';
       } else {
         errorMessage = '';
         geojson.geometries = [];
-        results = data.results;
-        results.forEach((result) => {
-          if (result.location.geojson) {
-            geojson.geometries.push(...result.location.geojson.geometries);
+        items = data.items;
+        items.forEach((item) => {
+          if (item.location.geojson) {
+            geojson.geometries.push(...item.location.geojson.geometries);
           }
         });
         geojson.geometries.filter((geometry) => geometry.type !== 'Point');
       }
     } catch (error) {
-      errorMessage = 'Failed to fetch search results. Please try again.';
+      errorMessage = 'Failed to fetch search items. Please try again.';
     }
     geojson.geometries.filter((geometry) => geometry.type !== 'Point');
   };
 </script>
 
-<main>
-  <div class="layout-container">
-    <div class="results-container">
-      <div class="search-container">
-        <select id="vector-type" bind:value={vectorType}>
-          <option value="imageVector" selected>Image</option>
-          <option value="captionVector">Caption</option>
-        </select>
-        <select bind:value={numResults}>
-          <option value="5" selected>5</option>
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-        </select>
-        <input type="text" bind:value={query} placeholder="Enter search query" />
-        <button on:click={search}>Search</button>
-      </div>
-
-      {#if errorMessage}
-        <div class="error-message">{errorMessage}</div>
-      {/if}
-
-      {#if results.length > 0}
-        <div class="scrollable-results">
-          {#each results as result}
-            <div class="card-container">
-              <a href={`/records/${result.id}`}>
-                <Card>
-                  <div style="text-align: center;">
-                    <p>
-                      Volume {result.volume}, Page {result.page},
-                      <i>
-                        Regio {romanNumerals[result.location.regio]}, Insula {result.location.insula}
-                      </i>
-                    </p>
-                  </div>
-                  <div class="image-container">
-                    <img
-                      class="card-image"
-                      src={`${result.imageURL}${data.blobSasToken}`}
-                      alt={result.id}
-                    />
-                  </div>
-                  <div class="caption-container">
-                    <p>{result.caption}</p>
-                  </div>
-                </Card>
-              </a>
-            </div>
-          {/each}
+<main class="container">
+  <div class="items-container">
+    <div class="search-container">
+      <select id="vector-type" bind:value={vectorType}>
+        <option value="imageVector" selected>Image</option>
+        <option value="captionVector">Caption</option>
+      </select>
+      <select bind:value={numResults}>
+        <option value="5" selected>5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+      <input type="text" bind:value={query} placeholder="Enter search query" />
+      <button on:click={search}>Search</button>
+    </div>
+    {#if errorMessage}
+      <div class="error-message">{errorMessage}</div>
+    {/if}
+    <div class="scrollable-items">
+      {#each items as item}
+        <div class="card-container">
+          <a href={`/item/${item.id}`}>
+            <Card>
+              <div style="text-align: center;">
+                <p>
+                  Volume {item.volume}, Page {item.page},
+                  <i>
+                    Regio {romanNumerals[item.location.regio]}, Insula {item.location.insula}
+                  </i>
+                </p>
+              </div>
+              <div class="image-container">
+                <img class="card-image" src={item.imageURL} alt={item.id} />
+              </div>
+              <div class="caption-container">
+                <p>{item.caption}</p>
+              </div>
+            </Card>
+          </a>
         </div>
-      {/if}
+      {/each}
     </div>
-    <div class="map-container">
-      <Map {geojson} center={undefined} />
-    </div>
+  </div>
+  <div class="map-container">
+    <Map {geojson} center={undefined} />
   </div>
 </main>
 
 <style>
-  .layout-container {
+  .container {
     display: flex;
     height: 100vh;
   }
 
-  .results-container {
+  .items-container {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
     border-right: 1px solid #ddd;
   }
 
-  .scrollable-results {
+  .scrollable-items {
     display: flex;
     flex-direction: column;
     gap: 20px;
