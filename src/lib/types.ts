@@ -12,4 +12,5 @@ export type PPMItem = {
     geojson: GeoJSON.GeometryCollection | null;
   }
   imageVector?: number[];
+  captionVector?: number[];
 }

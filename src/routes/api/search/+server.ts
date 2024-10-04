@@ -52,7 +52,7 @@ export const POST = async ({ request }) => {
     if (embedding.length === 0) {
       throw new Error('Failed to generate embedding');
     }
-    const { resources } = await container.items
+    const { resources: items } = await container.items
       .query({
         query: `SELECT TOP @numResults c.id, c.imageURL, c.caption_en, c.volume, c.page, c.location FROM c ORDER BY VectorDistance(c.${vectorType}, @embedding)`,
         parameters: [
@@ -62,7 +62,7 @@ export const POST = async ({ request }) => {
       })
       .fetchAll();
 
-    return json({ items: resources });
+    return json({ items });
   } catch (error: any) {
     console.error('Error:', error.message);
     return json({ error: error.message }, { status: 500 });

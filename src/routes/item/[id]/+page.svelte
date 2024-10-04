@@ -7,7 +7,8 @@
 
   export let data: {
     item: PPMItem;
-    similarItems: PPMItem[];
+    similarImages: PPMItem[];
+    similarCaptions: PPMItem[];
   };
 </script>
 
@@ -71,24 +72,52 @@
   <h3>Similar Images:</h3>
   <div class="bottom">
     <div class="grid-container">
-      {#each data.similarItems as similarItem}
+      {#each data.similarImages as similarImage}
         <div class="card-container">
-          <a href={`/item/${similarItem.id}`}>
+          <a href={`/item/${similarImage.id}`}>
             <Card>
               <div class="title-container">
                 <p>
-                  Volume {similarItem.volume}, Page {similarItem.page},
+                  Volume {similarImage.volume}, Page {similarImage.page},
                   <i>
-                    Regio {romanNumerals[similarItem.location.regio]},
-                    Insula {similarItem.location.insula}
+                    Regio {romanNumerals[similarImage.location.regio]}, Insula {similarImage.location
+                      .insula}
                   </i>
                 </p>
               </div>
               <div class="image-container">
-                <img class="card-image" src={similarItem.imageURL} alt={similarItem.id} />
+                <img class="card-image" src={similarImage.imageURL} alt={similarImage.id} />
               </div>
               <div class="caption-container">
-                <p>{similarItem.caption_en}</p>
+                <p>{similarImage.caption_en}</p>
+              </div>
+            </Card>
+          </a>
+        </div>
+      {/each}
+    </div>
+  </div>
+  <h3>Similar Captions:</h3>
+  <div class="bottom">
+    <div class="grid-container">
+      {#each data.similarCaptions as similarCaption}
+        <div class="card-container">
+          <a href={`/item/${similarCaption.id}`}>
+            <Card>
+              <div class="title-container">
+                <p>
+                  Volume {similarCaption.volume}, Page {similarCaption.page},
+                  <i>
+                    Regio {romanNumerals[similarCaption.location.regio]}, Insula {similarCaption
+                      .location.insula}
+                  </i>
+                </p>
+              </div>
+              <div class="image-container">
+                <img class="card-image" src={similarCaption.imageURL} alt={similarCaption.id} />
+              </div>
+              <div class="caption-container">
+                <p>{similarCaption.caption_en}</p>
               </div>
             </Card>
           </a>
