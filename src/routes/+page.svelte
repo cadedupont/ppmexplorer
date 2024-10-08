@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { SlideToggle } from '@skeletonlabs/skeleton';
+
   import Map from '$lib/components/Map.svelte';
   import { romanNumerals } from '$lib/helpers';
 
@@ -10,6 +12,7 @@
   let errorMessage: string;
   let numResults: number;
   let geojson: PPMGeoJSONFeatureCollection = { type: 'FeatureCollection', features: [] };
+  let showRegios: boolean = true;
 
   const search = async () => {
     try {
@@ -111,6 +114,9 @@
     </div>
   </div>
   <div class="col-span-2 p-5">
-    <Map {geojson} center={[14.4884, 40.75103]} zoom={15} showMarker />
+    <SlideToggle name="slider-medium" bind:checked={showRegios} active="bg-primary-500" size="med">
+      Show Regios
+    </SlideToggle>
+    <Map {geojson} center={[14.4884, 40.75103]} zoom={15} showMarker {showRegios} />
   </div>
 </main>

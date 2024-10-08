@@ -12,13 +12,14 @@
   } from 'svelte-maplibre';
   import type { LngLatLike } from 'maplibre-gl';
 
-  import { urnToTitle } from '$lib/helpers';
+  import { urnToTitle, regios } from '$lib/helpers';
   import type { PPMGeoJSONFeatureCollection } from '$lib/types';
 
   export let geojson: PPMGeoJSONFeatureCollection;
   export let center: LngLatLike;
   export let zoom: number;
   export let showMarker: boolean = false;
+  export let showRegios: boolean = false;
 
   let map: any;
   const resize = () => {
@@ -50,6 +51,24 @@
       }}
     />
   </RasterTileSource>
+
+  {#if showRegios}
+    <GeoJSON data={regios}>
+      <FillLayer
+        paint={{
+          'fill-color': 'blue',
+          'fill-opacity': 0.1
+        }}
+      />
+      <LineLayer
+        paint={{
+          'line-color': 'blue',
+          'line-width': 3
+        }}
+      />
+    </GeoJSON>
+  {/if}
+
   {#each geojson.features as feature}
     {#if feature}
       <GeoJSON data={feature}>

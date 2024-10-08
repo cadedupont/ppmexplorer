@@ -157,8 +157,8 @@
           <h6 class="font-bold">
             Volume {similarCaption.volume}, Page {similarCaption.page},
             <i>
-              Regio {romanNumerals[similarCaption.location.regio]}, Insula {similarCaption.location
-                .insula}
+              Regio {romanNumerals[similarCaption.location.regio]},
+              Insula {similarCaption.location.insula}
             </i>
           </h6>
           <article class="flex-grow overflow-y-auto">
