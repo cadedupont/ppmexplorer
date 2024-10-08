@@ -78,7 +78,7 @@
       />
       <button
         type="button"
-        class="variant-filled-primary btn flex-1"
+        class="variant-filled-primary btn flex-1 text-white"
         data-sveltekit-preload-data="hover"
         on:click={search}>Search</button
       >
@@ -106,6 +106,6 @@
     </div>
   </div>
   <div class="col-span-2 p-5">
-    <Map {geojson} center={[14.4884, 40.75103]} zoom={15.75} />
+    <Map {geojson} center={[14.4884, 40.75103]} zoom={15} />
   </div>
 </main>

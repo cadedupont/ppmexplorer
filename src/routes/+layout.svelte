@@ -7,9 +7,16 @@
   <title>PPMExplorer</title>
 </svelte:head>
 
-<nav>
-  <a href="/">home</a>
-  <a href="/about">about</a>
+<nav class="bg-gray-800 p-4">
+  <div class="container mx-auto flex justify-between items-center">
+    <a href="/" class="text-white text-lg font-bold hover:text-gray-300">
+      PPMExplorer
+    </a>2
+    <div class="space-x-4">
+      <a href="/" class="text-gray-300 hover:text-white text-sm">Home</a>
+      <a href="/about" class="text-gray-300 hover:text-white text-sm">About</a>
+    </div>
+  </div>
 </nav>
 
 <slot></slot>

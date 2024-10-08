@@ -26,7 +26,7 @@
 <main class="container mx-auto p-6">
   <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
     <!-- Left Column: Item Details -->
-    <div class="left table-container max-h-screen overflow-y-auto">
+    <div class="left table-container">
       <table class="table table-hover w-full table-auto text-sm">
         <tbody>
           <tr>
@@ -80,18 +80,24 @@
     </div>
 
     <!-- Right Column: Map -->
-    <div class="right max-h-screen overflow-y-auto">
+    <div class="right">
       {#if data.item.location.geojson}
-        <Map geojson={data.item.location.geojson} {center} zoom={18} />
-        <!-- Legend -->
-        <div class="mt-4 p-4 bg-white border rounded shadow">
-          <h4 class="font-semibold">Legend:</h4>
-          <ul>
-            <li><span class="inline-block w-4 h-4 bg-blue-500 mr-2"></span>Regio</li>
-            <li><span class="inline-block w-4 h-4 bg-green-500 mr-2"></span>Insula</li>
-            <li><span class="inline-block w-4 h-4 bg-yellow-500 mr-2"></span>Property</li>
-            <li><span class="inline-block w-4 h-4 bg-red-500 mr-2"></span>Room</li>
-          </ul>
+        <div class="flex flex-col h-full">
+          <!-- Map should fill the remaining space -->
+          <div class="flex-grow">
+            <Map geojson={data.item.location.geojson} {center} zoom={18} />
+          </div>
+          <!-- Legend and note -->
+          <div class="mt-4 p-4 bg-white border rounded shadow">
+            <h4 class="font-semibold">Legend:</h4>
+            <ul>
+              <li><span class="inline-block w-4 h-4 bg-blue-500 mr-2"></span>Regio</li>
+              <li><span class="inline-block w-4 h-4 bg-green-500 mr-2"></span>Insula</li>
+              <li><span class="inline-block w-4 h-4 bg-yellow-500 mr-2"></span>Property</li>
+              <li><span class="inline-block w-4 h-4 bg-red-500 mr-2"></span>Room</li>
+            </ul>
+            <p class="mt-2 text-sm text-gray-600">Note: Some map data may be unavailable for certain items.</p>
+          </div>
         </div>
       {:else}
         <p class="text-red-600">No map data available for this item.</p>
@@ -121,6 +127,34 @@
           </h6>
           <article class="flex-grow overflow-y-auto">
             {similarImage.caption_en}
+          </article>
+        </div>
+      </a>
+    {/each}
+  </div>
+
+  <!-- Similar Captions Section -->
+  <h3 class="mt-8 text-2xl font-semibold">Similar Captions:</h3>
+  <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    {#each data.similarCaptions as similarCaption}
+      <a class="card variant-ghost-primary card-hover block h-[600px] p-4" href={`/item/${similarCaption.id}`}>
+        <header class="flex h-1/2 justify-center">
+          <img
+            class="h-full bg-transparent object-contain"
+            src={similarCaption.imageURL}
+            alt={similarCaption.id}
+          />
+        </header>
+        <div class="flex h-1/2 flex-col space-y-4 p-4">
+          <h6 class="font-bold">
+            Volume {similarCaption.volume}, Page {similarCaption.page},
+            <i>
+              Regio {romanNumerals[similarCaption.location.regio]}, Insula {similarCaption.location
+                .insula}
+            </i>
+          </h6>
+          <article class="flex-grow overflow-y-auto">
+            {similarCaption.caption_en}
           </article>
         </div>
       </a>
