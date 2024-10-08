@@ -30,7 +30,7 @@
       <table class="table table-hover w-full table-auto text-sm">
         <tbody>
           <tr>
-            <td class="py-2 font-semibold text-center">Image:</td>
+            <td class="py-2 text-center font-semibold">Image:</td>
             <td class="py-2">
               <div class="relative h-96 w-full">
                 <img
@@ -42,37 +42,37 @@
             </td>
           </tr>
           <tr>
-            <td class="py-2 font-semibold text-center">Caption (Italian):</td>
+            <td class="py-2 text-center font-semibold">Caption (Italian):</td>
             <td class="py-2 text-center">{data.item.caption}</td>
           </tr>
           <tr>
-            <td class="py-2 font-semibold text-center">Caption (English):</td>
+            <td class="py-2 text-center font-semibold">Caption (English):</td>
             <td class="py-2 text-center">{data.item.caption_en}</td>
           </tr>
           <tr>
-            <td class="py-2 font-semibold text-center">Volume:</td>
+            <td class="py-2 text-center font-semibold">Volume:</td>
             <td class="py-2 text-center">{data.item.volume}</td>
           </tr>
           <tr>
-            <td class="py-2 font-semibold text-center">Page Number:</td>
+            <td class="py-2 text-center font-semibold">Page Number:</td>
             <td class="py-2 text-center">{data.item.page}</td>
           </tr>
           <tr>
-            <td class="py-2 font-semibold text-center">Regio:</td>
+            <td class="py-2 text-center font-semibold">Regio:</td>
             <td class="py-2 text-center">
               {romanNumerals[data.item.location.regio]} ({data.item.location.regio})
             </td>
           </tr>
           <tr>
-            <td class="py-2 font-semibold text-center">Insula:</td>
+            <td class="py-2 text-center font-semibold">Insula:</td>
             <td class="py-2 text-center">{data.item.location.insula}</td>
           </tr>
           <tr>
-            <td class="py-2 font-semibold text-center">Property:</td>
+            <td class="py-2 text-center font-semibold">Property:</td>
             <td class="py-2 text-center">{data.item.location.property}</td>
           </tr>
           <tr>
-            <td class="py-2 font-semibold text-center">Room:</td>
+            <td class="py-2 text-center font-semibold">Room:</td>
             <td class="py-2 text-center">{data.item.location.room || 'N/A'}</td>
           </tr>
         </tbody>
@@ -82,21 +82,23 @@
     <!-- Right Column: Map -->
     <div class="right">
       {#if data.item.location.geojson}
-        <div class="flex flex-col h-full">
+        <div class="flex h-full flex-col">
           <!-- Map should fill the remaining space -->
           <div class="flex-grow">
             <Map geojson={data.item.location.geojson} {center} zoom={18} />
           </div>
           <!-- Legend and note -->
-          <div class="mt-4 p-4 bg-white border rounded shadow">
+          <div class="mt-4 rounded border bg-white p-4 shadow">
             <h4 class="font-semibold">Legend:</h4>
             <ul>
-              <li><span class="inline-block w-4 h-4 bg-blue-500 mr-2"></span>Regio</li>
-              <li><span class="inline-block w-4 h-4 bg-green-500 mr-2"></span>Insula</li>
-              <li><span class="inline-block w-4 h-4 bg-yellow-500 mr-2"></span>Property</li>
-              <li><span class="inline-block w-4 h-4 bg-red-500 mr-2"></span>Room</li>
+              <li><span class="mr-2 inline-block h-4 w-4 bg-blue-500"></span>Regio</li>
+              <li><span class="mr-2 inline-block h-4 w-4 bg-green-500"></span>Insula</li>
+              <li><span class="mr-2 inline-block h-4 w-4 bg-yellow-500"></span>Property</li>
+              <li><span class="mr-2 inline-block h-4 w-4 bg-red-500"></span>Room</li>
             </ul>
-            <p class="mt-2 text-sm text-gray-600">Note: Some map data may be unavailable for certain items.</p>
+            <p class="mt-2 text-sm text-gray-600">
+              Note: Some map data may be unavailable for certain items.
+            </p>
           </div>
         </div>
       {:else}
@@ -109,7 +111,10 @@
   <h3 class="mt-8 text-2xl font-semibold">Similar Images:</h3>
   <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
     {#each data.similarImages as similarImage}
-      <a class="card variant-ghost-primary card-hover block h-[600px] p-4" href={`/item/${similarImage.id}`}>
+      <a
+        class="card variant-ghost-primary card-hover block h-[600px] p-4"
+        href={`/item/${similarImage.id}`}
+      >
         <header class="flex h-1/2 justify-center">
           <img
             class="h-full bg-transparent object-contain"
@@ -137,7 +142,10 @@
   <h3 class="mt-8 text-2xl font-semibold">Similar Captions:</h3>
   <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
     {#each data.similarCaptions as similarCaption}
-      <a class="card variant-ghost-primary card-hover block h-[600px] p-4" href={`/item/${similarCaption.id}`}>
+      <a
+        class="card variant-ghost-primary card-hover block h-[600px] p-4"
+        href={`/item/${similarCaption.id}`}
+      >
         <header class="flex h-1/2 justify-center">
           <img
             class="h-full bg-transparent object-contain"

@@ -5,16 +5,20 @@
     GeoJSON,
     FillLayer,
     LineLayer,
+    DefaultMarker,
+    Popup,
     RasterTileSource,
     RasterLayer
   } from 'svelte-maplibre';
-
   import type { LngLatLike } from 'maplibre-gl';
+
+  import { urnToTitle } from '$lib/helpers';
   import type { PPMGeoJSONFeatureCollection } from '$lib/types';
 
   export let geojson: PPMGeoJSONFeatureCollection;
   export let center: LngLatLike;
   export let zoom: number;
+  export let showMarker: boolean = false;
 
   let map: any;
   const resize = () => {
@@ -52,7 +56,7 @@
         <FillLayer
           paint={{
             'fill-color': feature.properties.color,
-            'fill-opacity': 0.25
+            'fill-opacity': 0.25 * (showMarker ? feature.properties.ppmItemIDs.length : 1)
           }}
         />
         <LineLayer
@@ -61,6 +65,22 @@
             'line-width': 1
           }}
         />
+        {#if showMarker}
+          <DefaultMarker lngLat={feature.properties.centroid}>
+            <Popup offset={[0, -10]}>
+              <div class="mb-2 text-lg font-bold">{urnToTitle(feature.properties.title)}</div>
+              <ul class="list-inside list-disc space-y-1">
+                {#each feature.properties.ppmItemIDs as itemID}
+                  <li class="text-sm">
+                    <a href={`/item/${itemID}`} class="text-blue-500 hover:text-blue-700">
+                      {itemID}
+                    </a>
+                  </li>
+                {/each}
+              </ul>
+            </Popup>
+          </DefaultMarker>
+        {/if}
       </GeoJSON>
     {/if}
   {/each}

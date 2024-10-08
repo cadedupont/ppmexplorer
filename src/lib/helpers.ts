@@ -9,3 +9,12 @@ export const romanNumerals: { [key: number]: string } = {
   8: 'VIII',
   9: 'IX'
 };
+
+export const urnToTitle = (urn: string): string => {
+  const parts = urn.split(':')[3].split('-');
+  const regio = parseInt(parts[0].replace('r', ''));
+  const insula = parseInt(parts[1].replace('i', ''));
+  const property = parseInt(parts[2].replace('p', ''));
+  const room = parts[4];
+  return `Regio ${romanNumerals[regio]}, Insula ${insula}, Property ${property}, Room ${room}`;
+};

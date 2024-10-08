@@ -32,17 +32,22 @@
         geojson.features = [];
         items = data.items;
         items.forEach((item) => {
-          const property = item.location.geojson.features[2];
           const room = item.location.geojson.features[3];
-          if (property) {
-            geojson.features.push(property);
-          }
           if (room) {
-            geojson.features.push(room);
+            const existingRoom = geojson.features.find(
+              (feature) => feature.id === room.properties.title
+            );
+            if (existingRoom) {
+              existingRoom.properties.ppmItemIDs.push(item.id);
+            } else {
+              geojson.features.push(room);
+              room.properties.ppmItemIDs = [item.id];
+            }
           }
         });
       }
     } catch (err) {
+      console.error(err);
       errorMessage = 'Failed to fetch search items. Please try again.';
     }
   };
@@ -106,6 +111,6 @@
     </div>
   </div>
   <div class="col-span-2 p-5">
-    <Map {geojson} center={[14.4884, 40.75103]} zoom={15} />
+    <Map {geojson} center={[14.4884, 40.75103]} zoom={15} showMarker />
   </div>
 </main>
