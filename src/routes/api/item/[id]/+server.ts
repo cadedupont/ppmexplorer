@@ -15,14 +15,14 @@ export const GET = async ({ params }) => {
 
   const { resources: similarImages } = await container.items
     .query({
-      query: `SELECT c.id, c.imageURL, c.caption_en, c.volume, c.page, c.location FROM c ORDER BY VectorDistance(c.imageVector, @embedding) OFFSET 1 LIMIT 10`,
+      query: `SELECT c.id, c.imageURL, c.caption_en, c.volume, c.page, c.location FROM c ORDER BY VectorDistance(c.imageVector, @embedding) OFFSET 1 LIMIT 8`,
       parameters: [{ name: '@embedding', value: item.imageVector }]
     })
     .fetchAll();
 
   const { resources: similarCaptions } = await container.items
     .query({
-      query: `SELECT c.id, c.imageURL, c.caption_en, c.volume, c.page, c.location FROM c ORDER BY VectorDistance(c.captionVector, @embedding) OFFSET 1 LIMIT 10`,
+      query: `SELECT c.id, c.imageURL, c.caption_en, c.volume, c.page, c.location FROM c ORDER BY VectorDistance(c.captionVector, @embedding) OFFSET 1 LIMIT 8`,
       parameters: [{ name: '@embedding', value: item.captionVector }]
     })
     .fetchAll();

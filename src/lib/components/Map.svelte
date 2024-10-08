@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import {
     MapLibre,
     GeoJSON,
@@ -14,9 +15,22 @@
   export let geojson: PPMGeoJSONFeatureCollection;
   export let center: LngLatLike;
   export let zoom: number;
+
+  let map: any;
+  const resize = () => {
+    if (map) {
+      map.resize();
+      map.setCenter(center);
+    }
+  };
+  onMount(() => {
+    resize();
+  });
 </script>
 
 <MapLibre
+  bind:this={map}
+  on:resize={resize}
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   {center}
   {zoom}

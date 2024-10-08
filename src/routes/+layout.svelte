@@ -1,5 +1,6 @@
 <script>
   import '../app.css';
+  import '@fontsource/ubuntu';
 </script>
 
 <svelte:head>
@@ -16,5 +17,9 @@
 <style>
   :global(img) {
     pointer-events: none;
+  }
+
+  :global(body) {
+    font-family: 'Ubuntu', sans-serif;
   }
 </style>
