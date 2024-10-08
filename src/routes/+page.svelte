@@ -7,9 +7,9 @@
 
   let items: PPMItem[] = [];
   let query: string;
-  let vectorType: string;
+  let vectorType: string = 'imageVector';
   let errorMessage: string;
-  let numResults: number;
+  let numResults: number = 5; // Default value for number of results
   let geojson: GeoJSON.GeometryCollection = {
     type: 'GeometryCollection',
     geometries: []
@@ -40,31 +40,30 @@
             geojson.geometries.push(...item.location.geojson.geometries);
           }
         });
-        geojson.geometries.filter((geometry) => geometry.type !== 'Point');
+        geojson.geometries = geojson.geometries.filter((geometry) => geometry.type !== 'Point');
       }
     } catch (error) {
       errorMessage = 'Failed to fetch search items. Please try again.';
     }
-    geojson.geometries.filter((geometry) => geometry.type !== 'Point');
   };
 </script>
 
 <main class="container">
   <div class="items-container">
     <div class="search-container">
-      <select id="vector-type" bind:value={vectorType}>
-        <option value="imageVector" selected>Image</option>
+      <select id="vector-type" bind:value={vectorType} class="filter-select">
+        <option value="imageVector">Image</option>
         <option value="captionVector">Caption</option>
       </select>
-      <select bind:value={numResults}>
-        <option value="5" selected>5</option>
+      <select bind:value={numResults} class="result-select">
+        <option value="5">5</option>
         <option value="10">10</option>
         <option value="20">20</option>
         <option value="50">50</option>
         <option value="100">100</option>
       </select>
-      <input type="text" bind:value={query} placeholder="Enter search query" />
-      <button on:click={search}>Search</button>
+      <input type="text" bind:value={query} placeholder="Enter search query" class="search-input" />
+      <button on:click={search} class="search-button">Search</button>
     </div>
     {#if errorMessage}
       <div class="error-message">{errorMessage}</div>
@@ -110,6 +109,44 @@
     padding: 20px;
     overflow-y: auto;
     border-right: 1px solid #ddd;
+  }
+
+  .search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    background-color: #8e8e8e; /* Light background for the search bar */
+    border-radius: 8px; /* Rounded corners */
+    padding: 10px; /* Padding around the search elements */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+
+  .filter-select, .result-select, .search-input, .search-button {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 16px;
+  }
+
+  .filter-select, .result-select {
+    background-color: #ffffff; /* background for dropdowns */
+  }
+
+  .search-input {
+    flex: 1; /* Take remaining space */
+    border: 1px solid #ccc;
+  }
+
+  .search-button {
+    background-color: #000000; /* Bootstrap primary color BLACK  */
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  .search-button:hover {
+    background-color: #747b82; /* Darker shade on hover the "SEARCH" */
   }
 
   .scrollable-items {
@@ -165,12 +202,5 @@
     height: 100vh;
     padding: 20px;
     overflow: hidden;
-  }
-
-  .search-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
   }
 </style>
