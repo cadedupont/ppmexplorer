@@ -1,5 +1,5 @@
-<script lang="ts">
-  import '@fontsource/pt-serif';
+<script>
+  import '../app.css';
 </script>
 
 <svelte:head>
@@ -14,10 +14,6 @@
 <slot></slot>
 
 <style>
-  :global(body) {
-    font-family: 'PT Serif', serif;
-  }
-
   :global(img) {
     pointer-events: none;
   }

@@ -1,7 +1,5 @@
 <script lang="ts">
-  import Card from '@smui/card';
-
-  import Map from '$lib/components/Map.svelte';
+import Map from '$lib/components/Map.svelte';
   import { romanNumerals } from '$lib/helpers';
 
   import type { PPMGeoJSONFeatureCollection, PPMItem } from '$lib/types';
@@ -50,127 +48,58 @@
   };
 </script>
 
-<main class="container">
-  <div class="items-container">
-    <div class="search-container">
-      <select id="vector-type" bind:value={vectorType}>
-        <option value="imageVector" selected>Image</option>
-        <option value="captionVector">Caption</option>
-      </select>
-      <select bind:value={numResults}>
-        <option value="5" selected>5</option>
-        <option value="10">10</option>
-        <option value="20">20</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-      </select>
-      <input type="text" bind:value={query} placeholder="Enter search query" />
-      <button on:click={search}>Search</button>
+<main class="grid grid-cols-3 h-screen">
+  <div class="col-span-1 p-5 overflow-y-auto border-r border-gray-300">
+    <div class="mb-5 flex space-x-4">
+      <label class="block mb-2 flex-1">
+        <span>Vector Type</span>
+        <select class="select block w-full mt-1" bind:value={vectorType}>
+          <option value="imageVector" selected>Image</option>
+          <option value="captionVector">Caption</option>
+        </select>
+      </label>
+      <label class="block mb-2 flex-1">
+        <span>Number of Results</span>
+        <select class="select block w-full mt-1" bind:value={numResults}>
+          <option value="5" selected>5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </label>
+    </div>
+    <div class="mb-5 flex space-x-4">
+      <input class="input p-4block w-full p-2 mb-2 flex-3" type="text" bind:value={query} placeholder="Enter search query" />
+      <button
+      type="button"
+      class="btn variant-filled-primary flex-1"
+      data-sveltekit-preload-data="hover"
+      on:click={search}>Search</button>
     </div>
     {#if errorMessage}
-      <div class="error-message">{errorMessage}</div>
+      <div class="text-red-500 mb-5">{errorMessage}</div>
     {/if}
-    <div class="scrollable-items">
+    <div class="space-y-4">
       {#each items as item}
-        <div class="card-container">
-          <a href={`/item/${item.id}`}>
-            <Card>
-              <div style="text-align: center;">
-                <p>
-                  Volume {item.volume}, Page {item.page},
-                  <i>
-                    Regio {romanNumerals[item.location.regio]}, Insula {item.location.insula}
-                  </i>
-                </p>
-              </div>
-              <div class="image-container">
-                <img class="card-image" src={item.imageURL} alt={item.id} />
-              </div>
-              <div class="caption-container">
-                <p>{item.caption_en}</p>
-              </div>
-            </Card>
-          </a>
-        </div>
+        <a class="variant-ghost-primary card card-hover block p-4" href={`/item/${item.id}`}>
+          <header>
+            <img class="h-full bg-black/50 object-cover" src={item.imageURL} alt={item.id} />
+          </header>
+          <div class="space-y-4 p-4">
+            <h6 class="font-bold">
+              Volume {item.volume}, Page {item.page},
+              <i>
+                Regio {romanNumerals[item.location.regio]}, Insula {item.location.insula}
+              </i>
+            </h6>
+            <article>{item.caption_en}</article>
+          </div>
+        </a>
       {/each}
     </div>
   </div>
-  <div class="map-container">
+  <div class="col-span-2 p-5">
     <Map {geojson} center={[14.4884, 40.75103]} zoom={15} />
   </div>
 </main>
-
-<style>
-  .container {
-    display: flex;
-    height: 100vh;
-  }
-
-  .items-container {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    border-right: 1px solid #ddd;
-  }
-
-  .scrollable-items {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .card-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-    width: 100%;
-  }
-
-  .card-container a {
-    text-decoration: none;
-    color: inherit;
-    width: 100%;
-  }
-
-  .image-container {
-    width: 100%;
-    height: 300px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .error-message {
-    color: red;
-    margin-bottom: 20px;
-  }
-
-  .card-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    pointer-events: none;
-  }
-
-  .caption-container {
-    padding: 8px;
-    overflow: auto;
-  }
-
-  .map-container {
-    flex: 2;
-    height: 100vh;
-    padding: 20px;
-    overflow: hidden;
-  }
-
-  .search-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-</style>

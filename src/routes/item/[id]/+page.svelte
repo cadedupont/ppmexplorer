@@ -28,7 +28,7 @@
 <main class="container">
   <div class="top">
     <div class="left">
-      <table>
+      <table class="table-compact">
         <tr>
           <td>Image:</td>
           <td>
