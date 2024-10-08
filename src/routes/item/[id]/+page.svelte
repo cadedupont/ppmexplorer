@@ -3,13 +3,26 @@
 
   import Map from '$lib/components/Map.svelte';
   import { romanNumerals } from '$lib/helpers';
+
   import type { PPMItem } from '$lib/types';
+  import type { LngLatLike } from 'maplibre-gl';
 
   export let data: {
     item: PPMItem;
     similarImages: PPMItem[];
     similarCaptions: PPMItem[];
   };
+
+  let center: LngLatLike = [0, 0];
+  $: {
+    const features = [...data.item.location.geojson.features].reverse();
+    for (const feature of features) {
+      if (feature) {
+        center = feature.properties.centroid;
+        break;
+      }
+    }
+  }
 </script>
 
 <main class="container">
@@ -44,7 +57,7 @@
         </tr>
         <tr>
           <td>Regio:</td>
-          <td>{romanNumerals[data.item.location.regio]}</td>
+          <td>{romanNumerals[data.item.location.regio]} ({data.item.location.regio})</td>
         </tr>
         <tr>
           <td>Insula:</td>
@@ -54,15 +67,16 @@
           <td>Property:</td>
           <td>{data.item.location.property}</td>
         </tr>
+        <tr>
+          <td>Room:</td>
+          <td>{data.item.location.room || 'N/A'}</td>
+        </tr>
       </table>
     </div>
     <div class="right">
       {#if data.item.location.geojson}
         <div class="map-container">
-          <Map
-            geojson={data.item.location.geojson}
-            center={data.item.location.geojson.geometries[1].coordinates}
-          />
+          <Map geojson={data.item.location.geojson} {center} zoom={18} />
         </div>
       {:else}
         <p style="color: red;">No map data available for this item.</p>
@@ -80,8 +94,8 @@
                 <p>
                   Volume {similarImage.volume}, Page {similarImage.page},
                   <i>
-                    Regio {romanNumerals[similarImage.location.regio]}, Insula {similarImage.location
-                      .insula}
+                    Regio {romanNumerals[similarImage.location.regio]}, Insula {similarImage
+                      .location.insula}
                   </i>
                 </p>
               </div>
@@ -90,34 +104,6 @@
               </div>
               <div class="caption-container">
                 <p>{similarImage.caption_en}</p>
-              </div>
-            </Card>
-          </a>
-        </div>
-      {/each}
-    </div>
-  </div>
-  <h3>Similar Captions:</h3>
-  <div class="bottom">
-    <div class="grid-container">
-      {#each data.similarCaptions as similarCaption}
-        <div class="card-container">
-          <a href={`/item/${similarCaption.id}`}>
-            <Card>
-              <div class="title-container">
-                <p>
-                  Volume {similarCaption.volume}, Page {similarCaption.page},
-                  <i>
-                    Regio {romanNumerals[similarCaption.location.regio]}, Insula {similarCaption
-                      .location.insula}
-                  </i>
-                </p>
-              </div>
-              <div class="image-container">
-                <img class="card-image" src={similarCaption.imageURL} alt={similarCaption.id} />
-              </div>
-              <div class="caption-container">
-                <p>{similarCaption.caption_en}</p>
               </div>
             </Card>
           </a>

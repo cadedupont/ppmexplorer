@@ -8,16 +8,20 @@
     RasterLayer
   } from 'svelte-maplibre';
 
-  export let geojson: GeoJSON.GeometryCollection;
-  export let center: [number, number] | undefined;
+  import type { LngLatLike } from 'maplibre-gl';
+  import type { PPMGeoJSONFeatureCollection } from '$lib/types';
+
+  export let geojson: PPMGeoJSONFeatureCollection;
+  export let center: LngLatLike;
+  export let zoom: number;
 </script>
 
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
-  center={center ? center : [14.4884, 40.75103]}
-  zoom={center ? 18 : 15}
+  {center}
+  {zoom}
   minZoom={15}
-  maxZoom={18}
+  maxZoom={20}
   class="map"
   standardControls
 >
@@ -28,24 +32,22 @@
       }}
     />
   </RasterTileSource>
-  {#each geojson.geometries as geometry}
-    {#if geometry.type != 'Point'}
-      <GeoJSON data={geometry}>
+  {#each geojson.features as feature}
+    {#if feature}
+      <GeoJSON data={feature}>
         <FillLayer
           paint={{
-            'fill-color': 'blue',
+            'fill-color': feature.properties.color,
             'fill-opacity': 0.25
           }}
         />
         <LineLayer
           paint={{
-            'line-color': 'blue',
+            'line-color': feature.properties.color,
             'line-width': 1
           }}
         />
       </GeoJSON>
-      <!-- {:else}
-      <DefaultMarker lngLat={geometry.coordinates} /> -->
     {/if}
   {/each}
 </MapLibre>

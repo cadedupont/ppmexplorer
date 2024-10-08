@@ -2,18 +2,16 @@
   import Card from '@smui/card';
 
   import Map from '$lib/components/Map.svelte';
-  import type { PPMItem } from '$lib/types';
   import { romanNumerals } from '$lib/helpers';
+
+  import type { PPMGeoJSONFeatureCollection, PPMItem } from '$lib/types';
 
   let items: PPMItem[] = [];
   let query: string;
   let vectorType: string;
   let errorMessage: string;
   let numResults: number;
-  let geojson: GeoJSON.GeometryCollection = {
-    type: 'GeometryCollection',
-    geometries: []
-  };
+  let geojson: PPMGeoJSONFeatureCollection = { type: 'FeatureCollection', features: [] };
 
   const search = async () => {
     try {
@@ -33,19 +31,22 @@
         errorMessage = 'No items found. Please try again.';
       } else {
         errorMessage = '';
-        geojson.geometries = [];
+        geojson.features = [];
         items = data.items;
         items.forEach((item) => {
-          if (item.location.geojson) {
-            geojson.geometries.push(...item.location.geojson.geometries);
+          const property = item.location.geojson.features[2];
+          const room = item.location.geojson.features[3];
+          if (property) {
+            geojson.features.push(property);
+          }
+          if (room) {
+            geojson.features.push(room);
           }
         });
-        geojson.geometries.filter((geometry) => geometry.type !== 'Point');
       }
-    } catch (error) {
+    } catch (err) {
       errorMessage = 'Failed to fetch search items. Please try again.';
     }
-    geojson.geometries.filter((geometry) => geometry.type !== 'Point');
   };
 </script>
 
@@ -95,7 +96,7 @@
     </div>
   </div>
   <div class="map-container">
-    <Map {geojson} center={undefined} />
+    <Map {geojson} center={[14.4884, 40.75103]} zoom={15} />
   </div>
 </main>
 
@@ -159,7 +160,6 @@
     overflow: auto;
   }
 
-  /* Right side (Map) */
   .map-container {
     flex: 2;
     height: 100vh;
