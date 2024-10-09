@@ -132,7 +132,7 @@
           <article class="flex-grow overflow-y-auto">
             {similarImage.caption_en}
           </article>
-          <footer class="text-sm text-primary-600">
+          <footer class="text-sm currentColor">
             <i>
               Regio {romanNumerals[similarImage.location.regio]}, Insula {similarImage.location
                 .insula}, Property {similarImage.location.property}, Room {similarImage.location
@@ -167,7 +167,7 @@
           <article class="flex-grow overflow-y-auto">
             {similarCaption.caption_en}
           </article>
-          <footer class="text-sm text-primary-600">
+          <footer class="text-sm currentColor">
             <i>
               Regio {romanNumerals[similarCaption.location.regio]}, Insula {similarCaption.location
                 .insula}, Property {similarCaption.location.property}, Room {similarCaption.location
