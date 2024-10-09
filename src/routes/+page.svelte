@@ -35,6 +35,7 @@
         geojson.features = [];
         items = data.items;
         items.forEach((item) => {
+          if (!item.location.geojson) return;
           const room = item.location.geojson.features[3];
           if (room) {
             const existingRoom = geojson.features.find(

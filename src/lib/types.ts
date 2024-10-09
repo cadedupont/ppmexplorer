@@ -9,7 +9,7 @@ export type PPMGeoJSONFeature = {
   type: 'Feature';
   properties: {
     title: string;
-    color: string;
+    color: 'blue' | 'green' | 'yellow' | 'red';
     centroid: LngLatLike;
     bbox: LngLatBoundsLike;
     ppmItemIDs: string[];

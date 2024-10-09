@@ -11,6 +11,7 @@
     RasterLayer
   } from 'svelte-maplibre';
   import type { LngLatLike } from 'maplibre-gl';
+  import tailwindColors from 'tailwindcss/colors';
 
   import { urnToTitle, regios } from '$lib/helpers';
   import type { PPMGeoJSONFeatureCollection } from '$lib/types';
@@ -21,6 +22,13 @@
   export let showMarker: boolean = false;
   export let showRegios: boolean = false;
 
+  const colorMap: { [key in 'blue' | 'green' | 'yellow' | 'red']: string } = {
+    blue: tailwindColors.blue[500],
+    green: tailwindColors.green[500],
+    yellow: tailwindColors.yellow[500],
+    red: tailwindColors.red[500]
+  };
+
   let map: any;
   const resize = () => {
     if (map) {
@@ -28,6 +36,7 @@
       map.setCenter(center);
     }
   };
+
   onMount(() => {
     resize();
   });
@@ -56,13 +65,13 @@
     <GeoJSON data={regios}>
       <FillLayer
         paint={{
-          'fill-color': 'blue',
-          'fill-opacity': 0.1
+          'fill-color': colorMap['blue'],
+          'fill-opacity': 0.2
         }}
       />
       <LineLayer
         paint={{
-          'line-color': 'blue',
+          'line-color': colorMap['blue'],
           'line-width': 3
         }}
       />
@@ -74,14 +83,14 @@
       <GeoJSON data={feature}>
         <FillLayer
           paint={{
-            'fill-color': feature.properties.color,
-            'fill-opacity': 0.25 * (showMarker ? feature.properties.ppmItemIDs.length : 1)
+            'fill-color': colorMap[feature.properties.color],
+            'fill-opacity': 0.3 * (showMarker ? feature.properties.ppmItemIDs.length : 1)
           }}
         />
         <LineLayer
           paint={{
-            'line-color': feature.properties.color,
-            'line-width': 1
+            'line-color': colorMap[feature.properties.color],
+            'line-width': 3
           }}
         />
         {#if showMarker}
@@ -92,7 +101,7 @@
                 {#each feature.properties.ppmItemIDs as itemID}
                   <li class="text-sm">
                     <a href={`/item/${itemID}`} class="text-blue-500 hover:text-blue-700">
-                      {itemID}
+                      Volume {parseInt(itemID.split('_')[1])}, Page {parseInt(itemID.split('_')[3])}
                     </a>
                   </li>
                 {/each}
