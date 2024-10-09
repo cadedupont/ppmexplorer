@@ -27,7 +27,9 @@
   <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
     <!-- Left Column: Item Details -->
     <div class="left table-container">
-      <table class="table table-hover w-full table-auto text-sm">
+      <table
+        class="table table-hover w-full table-auto border-separate rounded border border-primary-500 text-sm"
+      >
         <tbody>
           <tr>
             <td class="py-2 text-center font-semibold">Image:</td>
@@ -88,7 +90,7 @@
             <Map geojson={data.item.location.geojson} {center} zoom={18} />
           </div>
           <!-- Legend and note -->
-          <div class="mt-4 rounded border bg-white p-4 shadow">
+          <div class="bg-primary mt-4 rounded border border-primary-500 p-4 shadow">
             <h4 class="font-semibold">Legend:</h4>
             <ul>
               <li><span class="mr-2 inline-block h-4 w-4 bg-blue-500"></span>Regio</li>
@@ -96,7 +98,7 @@
               <li><span class="mr-2 inline-block h-4 w-4 bg-yellow-500"></span>Property</li>
               <li><span class="mr-2 inline-block h-4 w-4 bg-red-500"></span>Room</li>
             </ul>
-            <p class="mt-2 text-sm text-gray-600">
+            <p class="mt-2 text-sm text-primary-600">
               Note: Some map data may be unavailable for certain items.
             </p>
           </div>
@@ -112,7 +114,7 @@
   <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
     {#each data.similarImages as similarImage}
       <a
-        class="card variant-ghost-primary card-hover block h-[600px] p-4"
+        class="card variant-ghost-tertiary card-hover block h-[600px] p-4"
         href={`/item/${similarImage.id}`}
       >
         <header class="flex h-1/2 justify-center">
@@ -124,15 +126,19 @@
         </header>
         <div class="flex h-1/2 flex-col space-y-4 p-4">
           <h6 class="font-bold">
-            Volume {similarImage.volume}, Page {similarImage.page},
-            <i>
-              Regio {romanNumerals[similarImage.location.regio]}, Insula {similarImage.location
-                .insula}
-            </i>
+            Volume {similarImage.volume}, Page {similarImage.page}
+            (Image {similarImage.id.split('_')[5]})
           </h6>
           <article class="flex-grow overflow-y-auto">
             {similarImage.caption_en}
           </article>
+          <footer class="text-sm text-primary-600">
+            <i>
+              Regio {romanNumerals[similarImage.location.regio]}, Insula {similarImage.location
+                .insula}, Property {similarImage.location.property}, Room {similarImage.location
+                .room || 'N/A'}
+            </i>
+          </footer>
         </div>
       </a>
     {/each}
@@ -143,7 +149,7 @@
   <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
     {#each data.similarCaptions as similarCaption}
       <a
-        class="card variant-ghost-primary card-hover block h-[600px] p-4"
+        class="card variant-ghost-secondary card-hover block h-[600px] p-4"
         href={`/item/${similarCaption.id}`}
       >
         <header class="flex h-1/2 justify-center">
@@ -155,15 +161,19 @@
         </header>
         <div class="flex h-1/2 flex-col space-y-4 p-4">
           <h6 class="font-bold">
-            Volume {similarCaption.volume}, Page {similarCaption.page},
-            <i>
-              Regio {romanNumerals[similarCaption.location.regio]},
-              Insula {similarCaption.location.insula}
-            </i>
+            Volume {similarCaption.volume}, Page {similarCaption.page}
+            (Image {similarCaption.id.split('_')[5]})
           </h6>
           <article class="flex-grow overflow-y-auto">
             {similarCaption.caption_en}
           </article>
+          <footer class="text-sm text-primary-600">
+            <i>
+              Regio {romanNumerals[similarCaption.location.regio]}, Insula {similarCaption.location
+                .insula}, Property {similarCaption.location.property}, Room {similarCaption.location
+                .room || 'N/A'}
+            </i>
+          </footer>
         </div>
       </a>
     {/each}

@@ -7,7 +7,7 @@ import { skeleton } from '@skeletonlabs/tw-plugin';
 
 const config = {
 	// 2. Opt for dark mode to be handled via the class method
-	darkMode: 'class',
+	darkMode: 'selector',
 	content: [
 		'./src/**/*.{html,js,svelte,ts}',
 		// 3. Append the path to the Skeleton package
@@ -22,7 +22,7 @@ const config = {
 	plugins: [
 		// 4. Append the Skeleton plugin (after other plugins)
 		skeleton({
-      themes: { preset: ["wintry"] }
+      themes: { preset: ["vintage"] }
     })
 	]
 } satisfies Config;

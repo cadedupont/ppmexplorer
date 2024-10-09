@@ -1,5 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { modeCurrent } from '@skeletonlabs/skeleton';
+  import { derived } from 'svelte/store';
   import {
     MapLibre,
     GeoJSON,
@@ -29,23 +31,26 @@
     red: tailwindColors.red[500]
   };
 
-  let map: any;
-  const resize = () => {
-    if (map) {
-      map.resize();
-      map.setCenter(center);
-    }
-  };
+  const style = derived(modeCurrent, ($isDarkMode) =>
+    $isDarkMode
+      ? 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json'
+      : 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
+  );
 
+  let map: maplibregl.Map | undefined;
+  const resize = () => {
+    map?.resize();
+    map?.setCenter(center);
+  };
   onMount(() => {
     resize();
   });
 </script>
 
 <MapLibre
-  bind:this={map}
+  bind:map
   on:resize={resize}
-  style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+  style={$style}
   {center}
   {zoom}
   minZoom={15}
@@ -77,7 +82,6 @@
       />
     </GeoJSON>
   {/if}
-
   {#each geojson.features as feature}
     {#if feature}
       <GeoJSON data={feature}>
@@ -96,12 +100,18 @@
         {#if showMarker}
           <DefaultMarker lngLat={feature.properties.centroid}>
             <Popup offset={[0, -10]}>
-              <div class="mb-2 text-lg font-bold">{urnToTitle(feature.properties.title)}</div>
-              <ul class="list-inside list-disc space-y-1">
+              <div class='mb-2 text-lg font-bold text-primary-600'>
+                {urnToTitle(feature.properties.title)}
+              </div>
+              <ul class="list-inside list-disc space-y-1 text-primary-600">
                 {#each feature.properties.ppmItemIDs as itemID}
                   <li class="text-sm">
-                    <a href={`/item/${itemID}`} class="text-blue-500 hover:text-blue-700">
+                    <a
+                      href={`/item/${itemID}`}
+                      class="text-tertiary-600 hover:text-tertiary-800"
+                    >
                       Volume {parseInt(itemID.split('_')[1])}, Page {parseInt(itemID.split('_')[3])}
+                      (Image {parseInt(itemID.split('_')[5])})
                     </a>
                   </li>
                 {/each}
@@ -118,5 +128,6 @@
   :global(.map) {
     height: 100%;
     width: 100%;
+    font-family: inherit;
   }
 </style>
