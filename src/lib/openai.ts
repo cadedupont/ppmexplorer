@@ -1,8 +1,7 @@
 import { AzureOpenAI } from 'openai';
 import { env } from '$lib/env';
 
-const client = new AzureOpenAI({
+const openaiClient = new AzureOpenAI({
   endpoint: String(env.AZURE_OPENAI_ENDPOINT)
 });
-
-export { client };
+export { openaiClient };

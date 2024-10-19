@@ -8,15 +8,18 @@ export type PPMGeoJSONFeatureCollection = {
 export type PPMGeoJSONFeature = {
   type: 'Feature';
   properties: {
-    color: string;
+    title: string;
+    color: 'blue' | 'green' | 'yellow' | 'red';
     centroid: LngLatLike;
     bbox: LngLatBoundsLike;
+    ppmItemIDs: string[];
   };
   geometry: {
     type: 'Polygon';
     coordinates: number[][][];
   };
-} | null;
+  id: string;
+};
 
 export type PPMItem = {
   id: string;
