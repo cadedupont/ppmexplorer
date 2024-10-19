@@ -1,11 +1,12 @@
 import { json } from '@sveltejs/kit';
 import { env } from '$lib/env';
-import { container } from '$lib/cosmos';
-import { client } from '$lib/openai';
+import { cosmosContainer } from '$lib/cosmos';
+import { openaiClient } from '$lib/openai';
+import { textAnalysisClient } from '$lib/text_analysis.js';
 
 const generateOpenAIEmbedding = async (query: string): Promise<number[]> => {
   try {
-    const response = await client.embeddings.create({
+    const response = await openaiClient.embeddings.create({
       model: 'text-embedding-3-large',
       dimensions: 1024,
       input: query
@@ -38,6 +39,16 @@ const generateAIVisionEmbedding = async (query: string): Promise<number[]> => {
   }
 };
 
+const getKeywords = async (query: string): Promise<string> => {
+  try {
+    const response = await textAnalysisClient.analyze('KeyPhraseExtraction', [query]);
+    return response[0].keyPhrases.join(' ');
+  } catch (err) {
+    console.error('Error:', err);
+    return '';
+  }
+};
+
 export const POST = async ({ request }) => {
   try {
     const { query, numResults, vectorType } = await request.json();
@@ -45,14 +56,16 @@ export const POST = async ({ request }) => {
       throw new Error('Missing required parameters');
     }
 
+    const keywords = await getKeywords(query);
     const embedding =
       vectorType === 'captionVector'
-        ? await generateOpenAIEmbedding(query)
-        : await generateAIVisionEmbedding(query);
+        ? await generateOpenAIEmbedding(keywords)
+        : await generateAIVisionEmbedding(keywords);
     if (embedding.length === 0) {
       throw new Error('Failed to generate embedding');
     }
-    const { resources: items } = await container.items
+
+    const { resources: items } = await cosmosContainer.items
       .query({
         query: `SELECT TOP @numResults c.id, c.imageURL, c.caption_en, c.volume, c.page, c.location FROM c ORDER BY VectorDistance(c.${vectorType}, @embedding)`,
         parameters: [

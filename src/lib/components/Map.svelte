@@ -7,7 +7,6 @@
     GeoJSON,
     FillLayer,
     LineLayer,
-    DefaultMarker,
     Marker,
     Popup,
     RasterTileSource,
@@ -39,18 +38,19 @@
   );
 
   let map: maplibregl.Map | undefined;
-  const resize = () => {
+  const reset = () => {
     map?.resize();
     map?.setCenter(center);
+    map?.setZoom(zoom);
   };
   onMount(() => {
-    resize();
+    reset();
   });
 </script>
 
 <MapLibre
   bind:map
-  on:resize={resize}
+  on:resize={reset}
   style={$style}
   {center}
   {zoom}
