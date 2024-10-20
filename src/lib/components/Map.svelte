@@ -54,7 +54,7 @@
   style={$style}
   {center}
   {zoom}
-  minZoom={15}
+  minZoom={14}
   maxZoom={20}
   class="map"
   standardControls

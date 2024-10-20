@@ -25,7 +25,6 @@
 
 <main class="container mx-auto p-6">
   <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-    <!-- Left Column: Item Details -->
     <div class="left table-container">
       <table
         class="table table-hover w-full table-auto border-separate rounded border border-primary-500 text-sm"
@@ -81,15 +80,12 @@
       </table>
     </div>
 
-    <!-- Right Column: Map -->
     <div class="right">
       {#if data.item.location.geojson}
         <div class="flex h-full flex-col">
-          <!-- Map should fill the remaining space -->
           <div class="flex-grow">
             <Map geojson={data.item.location.geojson} {center} zoom={18} />
           </div>
-          <!-- Legend and note -->
           <div class="bg-primary mt-4 rounded border border-primary-500 p-4 shadow">
             <h4 class="font-semibold">Legend:</h4>
             <ul>
@@ -109,7 +105,6 @@
     </div>
   </div>
 
-  <!-- Similar Images Section -->
   <h3 class="mt-8 text-2xl font-semibold">Similar Images:</h3>
   <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
     {#each data.similarImages as similarImage}
@@ -132,7 +127,7 @@
           <article class="flex-grow overflow-y-auto">
             {similarImage.caption_en}
           </article>
-          <footer class="text-sm currentColor">
+          <footer class="currentColor text-sm">
             <i>
               Regio {romanNumerals[similarImage.location.regio]}, Insula {similarImage.location
                 .insula}, Property {similarImage.location.property}, Room {similarImage.location
@@ -167,7 +162,7 @@
           <article class="flex-grow overflow-y-auto">
             {similarCaption.caption_en}
           </article>
-          <footer class="text-sm currentColor">
+          <footer class="currentColor text-sm">
             <i>
               Regio {romanNumerals[similarCaption.location.regio]}, Insula {similarCaption.location
                 .insula}, Property {similarCaption.location.property}, Room {similarCaption.location
